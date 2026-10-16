@@ -19,6 +19,15 @@ const DISHES = {
     mind:   'dishes/mcart-targets.mind',
     poster: 'dishes/mcart-poster.jpg'
   },
+
+  'Mr-Pizza': {
+    name: 'MR-Pizza-Mayu',
+    price: '', description: '', ingredients: '', allergens: '',
+    glb:    'dishes/mr_pizza_small-v1.glb',
+    glbIos: 'dishes/mr_pizza_ios-v1.glb',
+    mind:   'dishes/mr-pizza-target.mind',
+    poster: 'dishes/mrpizzamayo.png'
+  },
   // ---- NEXT DISH: add a comma after the last "}" above, then copy one block and paste it here ----
 
 };
