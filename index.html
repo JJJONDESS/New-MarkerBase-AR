@@ -135,6 +135,13 @@
 (function () {
   const $ = id => document.getElementById(id);
 
+  // If dishes.js has a typing mistake (usually a missing comma), say so instead of staying on "Loading..." forever
+  if (typeof DISHES === 'undefined' || typeof RESTAURANT === 'undefined') {
+    $('sub').textContent = 'Menu file problem: dishes.js has a typing mistake (usually a missing comma). Check the last line you edited.';
+    $('sub').style.color = '#c0392b'; $('bar').style.display = 'none'; $('go').style.display = 'none';
+    return;
+  }
+
   // ---------- Which dish? (?item=... from the QR link) ----------
   const key = new URLSearchParams(location.search).get('item');
   const DISH = DISHES[key];
