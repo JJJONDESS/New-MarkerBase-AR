@@ -17,6 +17,7 @@ const DISHES = {
     glb:    'dishes/mcart_small-v1.glb',        // Android marker AR
     glbIos: 'dishes/mcart_ios.glb',             // iPhone only (leave this line out if you made no Step 2 file)
     mind:   'dishes/mcart-targets.mind'
+    poster: 'dishes/mcart compress picture',
   },
 
   // ---- NEXT DISH: add a comma after the last "}" above, then copy one block and paste it here ----
