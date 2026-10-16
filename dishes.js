@@ -11,15 +11,14 @@ const RESTAURANT = {
 
 const DISHES = {
   
-  'mcart': {
-    name: 'McArt Pizza',                        // <- this name goes in the QR link: ?item=veg-pizza
+    'mcart': {
+    name: 'McArt Pizza',
     price: '', description: '', ingredients: '', allergens: '',
-    glb:    'dishes/mcart_small-v1.glb',        // Android marker AR
-    glbIos: 'dishes/mcart_ios.glb',             // iPhone only (leave this line out if you made no Step 2 file)
-    mind:   'dishes/mcart-targets.mind'
-    poster: 'dishes/mcart compress picture',
+    glb:    'dishes/mcart_small-v1.glb',
+    glbIos: 'dishes/mcart_ios-v1.glb',
+    mind:   'dishes/mcart-targets.mind',
+    poster: 'dishes/mcart-poster.jpg'
   },
-
   // ---- NEXT DISH: add a comma after the last "}" above, then copy one block and paste it here ----
 
 };
