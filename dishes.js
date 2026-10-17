@@ -26,7 +26,7 @@ const DISHES = {
     glb:    'dishes/mr_pizza_small-v1.glb',
     glbIos: 'dishes/mr_pizza_ios-v1.glb',
     mind:   'dishes/mr-pizza-target.mind',
-    poster: 'dishes/mrpizzamayoimage.jpg'
+    poster: 'dishes/mr-pizza-poster.jpg'
   },
   // ---- NEXT DISH: add a comma after the last "}" above, then copy one block and paste it here ----
 
