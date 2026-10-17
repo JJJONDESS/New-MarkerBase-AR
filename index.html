@@ -75,6 +75,8 @@
   #start .ui #go { padding: 15px 24px; }
   #start .ui .wa, #start .ui #info { background: none; border: 0; color: #1a8f4a; padding: 8px; width: auto; font-size: .95rem; }
   #start .ui #info { color: #555; text-decoration: underline; }
+  /* Poster picture: a normal image shown instantly, while the 3D viewer is still loading */
+  #posterimg { position: absolute; z-index: 1; object-fit: contain; pointer-events: none; background: #fff; transition: opacity .35s; }
   /* Loading bar for the 3D dish */
   #bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 6; pointer-events: none; }
   #bar i { display: block; height: 100%; width: 0; background: #e8452c; transition: width .25s; }
@@ -189,6 +191,33 @@
 
   // ---------- Step 1: the 3D dish (loads first) ----------
   const mv = $('mv');
+  const modelUrl = (isIOS && DISH.glbIos) ? DISH.glbIos : DISH.glb;
+
+  // Start downloading the 3D model right now, at the same time as the 3D viewer library (not after it)
+  try {
+    const pl = document.createElement('link');
+    pl.rel = 'preload'; pl.as = 'fetch'; pl.href = modelUrl; pl.crossOrigin = 'anonymous';
+    document.head.appendChild(pl);
+  } catch (e) {}
+
+  // The poster picture is a plain image, so it appears as soon as it has downloaded (it does not wait for the 3D viewer)
+  let posterImg = null;
+  if (DISH.poster) {
+    posterImg = new Image(); posterImg.id = 'posterimg'; posterImg.alt = '';
+    posterImg.onerror = () => { if (posterImg) posterImg.remove(); posterImg = null; };
+    posterImg.src = DISH.poster;
+    $('start').appendChild(posterImg);
+    const placePoster = () => {
+      if (!posterImg) return;
+      const r = mv.getBoundingClientRect();
+      Object.assign(posterImg.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    };
+    placePoster(); setTimeout(placePoster, 300);
+    addEventListener('resize', placePoster);
+    if (window.ResizeObserver) new ResizeObserver(placePoster).observe(mv);
+  }
+  const dropPoster = () => { if (!posterImg) return; const p = posterImg; posterImg = null; p.style.opacity = '0'; setTimeout(() => p.remove(), 400); };
+
   let xrOK = false;
   const checkAR = () => {
     const ok = mv.canActivateAR && (isIOS || (SHOW_AR_ON_ANDROID && xrOK));
@@ -198,7 +227,6 @@
   // The "View in your space" buttons stay hidden until the model has loaded, so they cannot be tapped too early.
   $('ar').onclick = $('ar2').onclick = () => { if (mv.canActivateAR) mv.activateAR(); };
 
-  if (DISH.poster) mv.setAttribute('poster', DISH.poster);       // optional: small picture shown while the 3D model loads (poster: '...' in dishes.js)
   if (DISH.usdz) mv.setAttribute('ios-src', DISH.usdz);          // optional: ready-made iPhone file (usdz: '...' in dishes.js)
   if (DISH.arScale) mv.setAttribute('scale', DISH.arScale);      // optional: resize the dish in AR (arScale: '2 2 2' in dishes.js)
 
@@ -219,6 +247,7 @@
     if (heroFinished) return;
     heroFinished = true;
     $('bar').style.display = 'none';
+    dropPoster();
     if (!isIOS || PRELOAD_AR_ON_IOS || wantAR) startEngine();   // the camera engine only starts after the 3D dish has finished
   };
   mv.addEventListener('load', () => {
@@ -230,7 +259,7 @@
     $('sub').textContent = 'Point your camera at a dish photo on the menu.';
     heroDone();
   });
-  mv.setAttribute('src', (isIOS && DISH.glbIos) ? DISH.glbIos : DISH.glb);   // optional: separate iPhone model (glbIos: '...' in dishes.js)
+  mv.setAttribute('src', modelUrl);   // optional: separate iPhone model (glbIos: '...' in dishes.js)
   setTimeout(() => { if (!heroFinished && (!isIOS || PRELOAD_AR_ON_IOS || wantAR)) startEngine(); }, 25000);   // safety: do not wait forever on a very slow connection
 
   // Android: ask the browser whether this phone supports AR (ARCore). If not, the button stays hidden.
